@@ -13,7 +13,8 @@ class UserStatus(models.TextChoices):
 class User(AbstractUser):
     """La classe User personnalisée"""
     id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
-    status = models.CharField(max_length=20 ,choices=UserStatus, default=UserStatus.ACTIVE)
+    status = models.CharField(max_length=20 ,choices=UserStatus.choices, default=UserStatus.ACTIVE)
+    email = models.EmailField(unique=True, blank=False, null=False)
 
     class Meta:
         ordering = ['-date_joined']
@@ -21,10 +22,21 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     
+def upload_profil_image(instance, filename):
+    ext = filename.split('.')[-1]
+    newname = f'profil_lunyo_{instance.user.id}.{ext}'
+    return f'lunyo/profil/{newname}'
+
 class Profil(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    bio = models.CharField(max_length=200, blank=True, null=True)
-    photo = models.ImageField(upload_to="lunyo/profil/")
+    bio = models.CharField(max_length=200, blank=True)
+    photo = models.ImageField(upload_to=upload_profil_image, blank=True, null=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profil")
+
+    class Meta:
+        ordering=["-createdAt"]
+
+    def __str__(self):
+        return f'Profil de {self.user.username}'
