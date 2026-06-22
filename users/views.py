@@ -5,16 +5,19 @@ from .models import User, Profil, UserStatus
 from rest_framework import permissions
 from .permissions import IsSelf, IsSelfOrAdmin
 
+# view d'inscription
 class InscriptionView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
+# view de la liste de tous les utilisateurs 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes=[permissions.AllowAny]
 
+# view du detail de chaque utiisateur et la modification sécurisée
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -24,6 +27,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.status = UserStatus.DELETED
         instance.save()
 
+# view de retour du profil de l'utilisateur connecté et la mise a jour du profil
 class ProfilCurrentView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfilSerializer
     permission_classes = [permissions.IsAuthenticated ,IsSelf]
@@ -31,7 +35,7 @@ class ProfilCurrentView(generics.RetrieveUpdateAPIView):
         user = self.request.user
         return get_object_or_404(Profil, user=user)
     
-    
+# view de profil de chaque utilisateur
 class ProfilView(generics.RetrieveAPIView):
     serializer_class=ProfilSerializer
     permission_classes=[permissions.AllowAny]

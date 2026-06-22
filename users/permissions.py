@@ -9,7 +9,6 @@ class IsSelfOrAdmin(permissions.BasePermission):
     
 
 # a utiliser uniquement lorsque l'objet est en relation avec User
-
 class IsSelf(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
