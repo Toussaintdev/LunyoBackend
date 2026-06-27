@@ -10,12 +10,14 @@ class InscriptionView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
+    authentication_classes = []
 
 # view de la liste de tous les utilisateurs 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes=[permissions.AllowAny]
+    authentication_classes = []
 
 # view du detail de chaque utiisateur et la modification sécurisée
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
